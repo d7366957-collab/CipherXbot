@@ -1,0 +1,51 @@
+/* public/css/animations.css */
+
+/* Efecto de pulso para el botón de Soporte */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+.support-btn {
+    animation: pulse 3s ease-in-out infinite;
+}
+
+/* Efecto de fade para los modales */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.modal.show {
+    display: flex;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Animación para los Toast */
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, 20px); }
+    10% { opacity: 1; transform: translate(-50%, 0); }
+    90% { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, -20px); }
+}
+
+/* Hover en tarjetas */
+.card {
+    transition: transform 0.2s ease, border-color 0.2s;
+}
+.card:active {
+    transform: scale(0.99);
+    border-color: var(--border);
+}
+
+/* Animación de entrada para las operaciones */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+.op-row {
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+/* Botones al presionar */
+button:active {
+    opacity: 0.8;
+  }
