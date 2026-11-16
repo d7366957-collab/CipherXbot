@@ -2,6 +2,7 @@ const { Telegraf, Markup } = require('telegraf');
 require('dotenv').config();
 const { t } = require('./i18n');
 const { pool } = require('./db');
+const path = require('path');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -24,18 +25,25 @@ bot.start(async (ctx) => {
     }
 
     const message = t(userLang, 'welcome');
-    const webAppUrl = process.env.WEBAPP_URL || 'https://cipherx.duckdns.org';
+    const webAppUrl = process.env.WEBAPP_URL || 'https://cipherrx.duckdns.org';
     
     const keyboard = Markup.inlineKeyboard([
       [Markup.button.webApp(t(userLang, 'btn_enter'), webAppUrl)],
       [Markup.button.callback(t(userLang, 'btn_lang'), 'change_lang')]
     ]);
 
-    // Nota: Cuando subas tu logo a un hosting, cambia esta URL
-    await ctx.replyWithPhoto(
-      { url: 'https://i.imgur.com/your_logo.png' }, 
-      { caption: message, parse_mode: 'HTML', ...keyboard }
-    );
+    // Ruta local a la imagen en assets/icons/
+    const imagePath = path.join(__dirname, '../assets/icons/inicio.jpg');
+
+    try {
+      await ctx.replyWithPhoto(
+        { source: imagePath }, 
+        { caption: message, parse_mode: 'HTML', ...keyboard }
+      );
+    } catch (photoErr) {
+      console.error('Error al enviar la foto, enviando solo texto:', photoErr.message);
+      await ctx.reply(message, { parse_mode: 'HTML', ...keyboard });
+    }
 
   } catch (err) {
     console.error('Error en /start:', err);
@@ -59,19 +67,24 @@ bot.action('change_lang', (ctx) => {
     await pool.query('UPDATE users SET language = $1 WHERE telegram_id = $2', [lang, telegramId]);
     await ctx.answerCbQuery(t(lang, 'lang_selected'));
     ctx.deleteMessage();
-    // Simulamos que el usuario vuelve a escribir /start
-    ctx.reply(t(lang, 'welcome'), {
-      parse_mode: 'HTML',
-      ...Markup.inlineKeyboard([
-        [Markup.button.webApp(t(lang, 'btn_enter'), process.env.WEBAPP_URL)],
-        [Markup.button.callback(t(lang, 'btn_lang'), 'change_lang')]
-      ])
-    });
+    
+    const imagePath = path.join(__dirname, '../assets/icons/inicio.jpg');
+    const msg = t(lang, 'welcome');
+    const kb = Markup.inlineKeyboard([
+      [Markup.button.webApp(t(lang, 'btn_enter'), process.env.WEBAPP_URL)],
+      [Markup.button.callback(t(lang, 'btn_lang'), 'change_lang')]
+    ]);
+
+    try {
+      await ctx.replyWithPhoto({ source: imagePath }, { caption: msg, parse_mode: 'HTML', ...kb });
+    } catch (e) {
+      await ctx.reply(msg, { parse_mode: 'HTML', ...kb });
+    }
   });
 });
 
 bot.launch().then(() => {
-  console.log('🤖 Bot de Telegram encendido...');
+  console.log('🤖 Bot de Telegram encendido y esperando mensajes...');
 });
 
 process.once('SIGINT', () => bot.stop('SIGINT'));
