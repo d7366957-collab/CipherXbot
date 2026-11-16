@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CipherX | Copy-Trading</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="icon" type="image/png" href="../assets/icons/logoo.png">
+</head>
+<body>
+
+    <!-- HEADER (Perfil + Menú) -->
+    <header class="top-bar">
+        <div class="profile-mini">
+            <img id="user-avatar" class="avatar-mini" src="../assets/icons/logoo.png" alt="Avatar">
+            <div class="profile-text">
+                <div id="user-name" class="name-mini">Cargando...</div>
+                <div class="id-mini">
+                    <span id="user-id">ID: ---</span>
+                    <button id="copy-id" class="copy-mini">📋</button>
+                </div>
+            </div>
+        </div>
+        <div class="top-actions">
+            <button class="icon-btn" onclick="openMenu()">⋮</button>
+        </div>
+    </header>
+
+    <!-- BARRA DEL POOL -->
+    <div id="pool-container" class="pool-container">
+        <div class="pool-header">
+            <span>🔥 Pool gratis:</span>
+            <span id="pool-amount">Cargando...</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div id="pool-progress" class="progress-bar-fill" style="width: 100%;"></div>
+        </div>
+        <div class="pool-footer">
+            <span id="pool-countdown">⏳ Calculando...</span>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main id="app-content"></main>
+
+    <!-- NAVEGACIÓN INFERIOR -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('inicio', this)">
+            <img src="../assets/icons/casa.png" alt="Inicio">
+            <span>Inicio</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('amigos', this)">
+            <img src="../assets/icons/amigos.png" alt="Amigos">
+            <span>Amigos</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('billetera', this)">
+            <img src="../assets/icons/billetera.png" alt="Billetera">
+            <span>Billetera</span>
+        </button>
+    </nav>
+
+    <!-- BOTÓN FLOTANTE DE SOPORTE -->
+    <button id="support-btn" class="support-btn" onclick="openSupport()">
+        <img src="../assets/icons/soporte.png" alt="Soporte">
+        <span>SOPORTE</span>
+    </button>
+
+    <!-- MENÚ DE 3 PUNTOS -->
+    <div id="dropdown-menu" class="dropdown-menu">
+        <a href="#" onclick="changeLanguage()">🌐 Idioma</a>
+        <a href="#" onclick="showAbout()">ℹ️ Sobre Nosotros</a>
+        <a href="#" onclick="openSupport()">💬 Soporte</a>
+        <a href="#" onclick="showTerms()">📄 Términos</a>
+    </div>
+
+    <!-- MODAL DE BIENVENIDA -->
+    <div id="welcome-modal" class="modal">
+        <div class="modal-content">
+            <img src="../assets/icons/logoo.png" alt="CipherX" class="welcome-logo">
+            <h2>BONO DE BIENVENIDA</h2>
+            <h1 class="bonus-amount">$40.00 USDT</h1>
+            <p>Acreditado en tu saldo congelado. Genera rendimiento diario desde hoy.</p>
+            <button class="btn-primary" onclick="claimBonus()">RECLAMAR $40</button>
+            <p class="terms-text">Al reclamar aceptas los Términos y Condiciones de CipherX</p>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/wallet.js"></script>
+    <script src="js/referrals.js"></script>
+    <script src="js/app.js"></script>
+</body>
+      </html>
