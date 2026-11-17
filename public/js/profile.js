@@ -2,10 +2,7 @@
 
 // Esta función se llama desde app.js al iniciar
 window.initProfile = function() {
-    // El botón de copiar ID ya se configuró en app.js, 
-    // pero aquí podemos agregar lógica extra si la necesitamos.
-    // Por ahora, solo nos aseguramos de que el ID se vea bien.
-    
+    // Si el usuario de Telegram está cargado, mostramos su ID
     if (currentUser && currentUser.id) {
         const idElement = document.getElementById('user-id');
         if (idElement) {
