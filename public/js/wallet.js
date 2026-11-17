@@ -1,6 +1,5 @@
 // public/js/wallet.js
 
-// Esta función se llama desde app.js cuando el usuario toca la pestaña "Billetera"
 window.renderWallet = async function(container) {
     container.innerHTML = `
         <div style="text-align: center; padding: 40px;">
@@ -12,11 +11,9 @@ window.renderWallet = async function(container) {
     try {
         const user = await fetchUserData(currentUser.id);
         const config = await fetchPlatformStatus();
-        if (!user) throw new Error("Error al cargar");
+        
+        const withdrawable = user ? parseFloat(user.withdrawable_balance).toFixed(2) : '0.00';
 
-        const withdrawable = parseFloat(user.withdrawable_balance).toFixed(2);
-
-        // Construir la vista principal de la Billetera
         container.innerHTML = `
             <!-- TARJETA DE SALDO Y BOTONES -->
             <div class="card card-entrance">
@@ -42,7 +39,7 @@ window.renderWallet = async function(container) {
                 </div>
             </div>
 
-            <!-- MODAL DE DEPÓSITO (Oculto) -->
+            <!-- MODAL DE DEPÓSITO -->
             <div id="deposit-modal" class="modal">
                 <div class="modal-content" style="text-align: left;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -70,7 +67,7 @@ window.renderWallet = async function(container) {
                 </div>
             </div>
 
-            <!-- MODAL DE RETIRO (Oculto) -->
+            <!-- MODAL DE RETIRO -->
             <div id="withdraw-modal" class="modal">
                 <div class="modal-content" style="text-align: left;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -98,8 +95,7 @@ window.renderWallet = async function(container) {
             </div>
         `;
 
-        // Cargar el historial de depósitos y retiros
-        loadHistory(user.id);
+        loadHistory(user ? user.id : null);
 
     } catch (err) {
         container.innerHTML = `<div class="card" style="color: #FF4D5E; text-align: center;">Error al cargar la billetera.</div>`;
@@ -110,31 +106,25 @@ window.renderWallet = async function(container) {
 let selectedNetwork = 'BEP20';
 let selectedWithdrawNetwork = 'BEP20';
 
-// 1. ABRIR MODALES
 window.openDepositModal = () => document.getElementById('deposit-modal').classList.add('show');
 window.openWithdrawModal = () => document.getElementById('withdraw-modal').classList.add('show');
 window.closeModal = (id) => document.getElementById(id).classList.remove('show');
 
-// 2. SELECCIÓN DE RED (Depósito)
 window.selectNetwork = (net) => {
     selectedNetwork = net;
     ['BEP20', 'TRC20', 'TON'].forEach(n => {
         document.getElementById(`net-${n}`).style.opacity = n === net ? '1' : '0.6';
     });
-    
-    // Simulación de direcciones (luego las jalamos del .env)
     const addresses = { BEP20: '0x123abc...', TRC20: 'TXYZ123...', TON: 'UQabc123...' };
     document.getElementById('deposit-address').textContent = addresses[net];
 };
 
-// 3. COPIAR DIRECCIÓN
 window.copyAddress = () => {
     const addr = document.getElementById('deposit-address').textContent;
     navigator.clipboard.writeText(addr);
     showToast('Dirección copiada ✅');
 };
 
-// 4. ENVIAR DEPÓSITO
 window.submitDeposit = async () => {
     const txid = document.getElementById('deposit-txid').value.trim();
     if (!txid || txid.length < 10) return showToast('❌ TXID inválido');
@@ -146,7 +136,7 @@ window.submitDeposit = async () => {
     const res = await apiSubmitDeposit(currentUser.id, txid, selectedNetwork);
     
     if (res.ok) {
-        showToast('✅ Depósito enviado a verificación. Tardará unos minutos.');
+        showToast('✅ Depósito enviado a verificación.');
         closeModal('deposit-modal');
     } else {
         showToast('❌ ' + res.message);
@@ -156,7 +146,6 @@ window.submitDeposit = async () => {
     btn.disabled = false;
 };
 
-// 5. SELECCIÓN DE RED (Retiro)
 window.selectWithdrawNetwork = (net) => {
     selectedWithdrawNetwork = net;
     ['BEP20', 'TRC20', 'TON'].forEach(n => {
@@ -164,7 +153,6 @@ window.selectWithdrawNetwork = (net) => {
     });
 };
 
-// 6. ENVIAR RETIRO
 window.submitWithdrawal = async () => {
     const amount = parseFloat(document.getElementById('withdraw-amount').value);
     const address = document.getElementById('withdraw-address').value.trim();
@@ -182,7 +170,6 @@ window.submitWithdrawal = async () => {
         showToast('✅ Retiro solicitado. Procesando 0-24h.');
         closeModal('withdraw-modal');
     } else {
-        // Aquí es donde sale el mensaje de Fase 2 (Pool agotado)
         showToast('⚠️ ' + res.message);
     }
 
@@ -190,9 +177,7 @@ window.submitWithdrawal = async () => {
     btn.disabled = false;
 };
 
-// 7. CARGAR HISTORIAL (Simulado por ahora)
 async function loadHistory(userId) {
-    // En producción, esto haría un fetch a la API de historial
     const historyHTML = `
         <div class="history-row">
             <div class="history-left">
