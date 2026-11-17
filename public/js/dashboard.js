@@ -1,8 +1,6 @@
 // public/js/dashboard.js
 
-// Esta función se llama desde app.js cuando el usuario toca la pestaña "Inicio"
 window.renderDashboard = async function(container) {
-    // 1. Mostrar un loader mientras cargamos los datos
     container.innerHTML = `
         <div style="text-align: center; padding: 40px;">
             <div class="spinner" style="border: 3px solid #1A2332; border-top: 3px solid #00A3FF; border-radius: 50%; width: 40px; height: 40px; margin: 0 auto; animation: spin 1s linear infinite;"></div>
@@ -11,16 +9,18 @@ window.renderDashboard = async function(container) {
     `;
 
     try {
-        // 2. Pedir los datos al backend
+        // Pedir los datos al backend
         const user = await fetchUserData(currentUser.id);
-        if (!user) throw new Error("No se pudo cargar el usuario");
+        
+        // Si el usuario no existe en la DB aún (porque acaba de entrar), mostramos ceros
+        const userFrozen = user ? parseFloat(user.frozen_balance) : 0;
+        const userWithdrawable = user ? parseFloat(user.withdrawable_balance) : 0;
+        const totalBalance = userFrozen + userWithdrawable;
 
-        // 3. Construir el HTML del Dashboard
-        const totalBalance = parseFloat(user.frozen_balance) + parseFloat(user.withdrawable_balance);
-        const frozen = parseFloat(user.frozen_balance).toFixed(2);
-        const withdrawable = parseFloat(user.withdrawable_balance).toFixed(2);
+        const frozen = userFrozen.toFixed(2);
+        const withdrawable = userWithdrawable.toFixed(2);
 
-        // Aquí se simulan las operaciones (en producción vendrían del backend)
+        // Simulación de operaciones para el diseño
         const opsHTML = generarOperacionesHTML(user);
 
         container.innerHTML = `
@@ -51,7 +51,6 @@ window.renderDashboard = async function(container) {
                     <span class="card-title">📈 RENDIMIENTO DEL DÍA</span>
                     <span style="color: #00FF88; font-family: 'JetBrains Mono', monospace; font-weight: bold;">+0.75%</span>
                 </div>
-                <!-- Gráfica falsa (esto se puede reemplazar por un canvas real luego) -->
                 <div style="height: 80px; display: flex; align-items: flex-end; gap: 4px; margin-top: 10px;">
                     <div style="flex: 1; height: 30%; background: linear-gradient(to top, rgba(0,163,255,0.1), #00A3FF); border-radius: 4px;"></div>
                     <div style="flex: 1; height: 50%; background: linear-gradient(to top, rgba(0,163,255,0.1), #00A3FF); border-radius: 4px;"></div>
@@ -79,12 +78,8 @@ window.renderDashboard = async function(container) {
             </div>
         `;
 
-        // 4. Lógica para mostrar el modal del bono si es nuevo usuario
-        if (!user.bonus_claimed) {
-            document.getElementById('welcome-modal').classList.add('show');
-        }
-
     } catch (err) {
+        console.error(err);
         container.innerHTML = `
             <div class="card" style="text-align: center; color: #FF4D5E;">
                 <p>Error al cargar los datos. Revisa tu conexión.</p>
@@ -96,7 +91,6 @@ window.renderDashboard = async function(container) {
 
 // Función auxiliar para generar las filas de operaciones
 function generarOperacionesHTML(user) {
-    // Simulamos las 7 operaciones (en el futuro esto vendría de la DB)
     const ops = [
         { pair: 'BTC/USDT', pnl: '+0.85%', usdt: '+0.42', pos: true },
         { pair: 'ETH/USDT', pnl: '+0.60%', usdt: '+0.30', pos: true },
@@ -119,24 +113,4 @@ function generarOperacionesHTML(user) {
             </div>
         </div>
     `).join('');
-}
-
-// Función para reclamar el bono (conectada al botón del modal)
-window.claimBonus = async function() {
-    const btn = document.querySelector('#welcome-modal .btn-primary');
-    btn.textContent = 'Procesando...';
-    btn.disabled = true;
-
-    const res = await apiClaimBonus(currentUser.id);
-    
-    if (res.ok) {
-        document.getElementById('welcome-modal').classList.remove('show');
-        showToast('✅ ¡Bono de $40 acreditado!');
-        // Recargar el dashboard para ver el saldo actualizado
-        renderDashboard(document.getElementById('app-content'));
-    } else {
-        btn.textContent = 'RECLAMAR $40';
-        btn.disabled = false;
-        showToast('❌ ' + (res.message || 'Error al reclamar'));
-    }
-};
+            }
