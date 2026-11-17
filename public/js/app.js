@@ -6,7 +6,6 @@ tg.setHeaderColor('#0A0E17');
 tg.setBackgroundColor('#0A0E17');
 
 let currentUser = null;
-let platformConfig = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Obtener datos del usuario de Telegram
@@ -18,6 +17,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (currentUser.photo_url) {
             document.getElementById('user-avatar').src = currentUser.photo_url;
         }
+    } else {
+        // Fallback para pruebas en navegador normal (sin Telegram)
+        currentUser = { id: 123456789, first_name: 'Test User' };
+        document.getElementById('user-name').textContent = 'Test User';
+        document.getElementById('user-id').textContent = 'ID: 123456789';
     }
 
     // 2. Lógica para copiar el ID
@@ -122,4 +126,4 @@ function startPoolTimer() {
             }
         }
     }, 1000);
-      }
+            }
