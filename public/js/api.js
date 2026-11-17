@@ -1,13 +1,13 @@
 // public/js/api.js
 
-// URL del backend (en producción será tu dominio DuckDNS)
-const API_URL = window.location.origin; // Toma la URL actual automáticamente
+// Usa el dominio actual (https://cipherrx.duckdns.org) para las peticiones
+const API_URL = window.location.origin;
 
-// Obtener los datos del usuario desde Telegram
+// 1. Obtener datos del usuario
 async function fetchUserData(telegramId) {
     try {
         const res = await fetch(`${API_URL}/api/user/${telegramId}`);
-        if (!res.ok) throw new Error('Error al obtener usuario');
+        if (!res.ok) throw new Error('Usuario no encontrado');
         return await res.json();
     } catch (err) {
         console.error('Error fetchUserData:', err);
@@ -15,7 +15,7 @@ async function fetchUserData(telegramId) {
     }
 }
 
-// Obtener el estado del Pool (Fase 1 o 2)
+// 2. Obtener estado del Pool (Fase 1 o 2)
 async function fetchPlatformStatus() {
     try {
         const res = await fetch(`${API_URL}/api/platform/status`);
@@ -27,22 +27,7 @@ async function fetchPlatformStatus() {
     }
 }
 
-// Reclamar el bono de $40
-async function apiClaimBonus(telegramId) {
-    try {
-        const res = await fetch(`${API_URL}/api/user/claim-bonus`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ telegramId })
-        });
-        return await res.json();
-    } catch (err) {
-        console.error('Error apiClaimBonus:', err);
-        return { ok: false, message: 'Error de conexión' };
-    }
-}
-
-// Solicitar un retiro
+// 3. Solicitar un retiro
 async function apiRequestWithdrawal(telegramId, amount, address, network) {
     try {
         const res = await fetch(`${API_URL}/api/wallet/withdraw`, {
@@ -57,7 +42,7 @@ async function apiRequestWithdrawal(telegramId, amount, address, network) {
     }
 }
 
-// Registrar un depósito (TXID)
+// 4. Registrar un depósito (TXID)
 async function apiSubmitDeposit(telegramId, txid, network) {
     try {
         const res = await fetch(`${API_URL}/api/wallet/deposit`, {
@@ -70,4 +55,4 @@ async function apiSubmitDeposit(telegramId, txid, network) {
         console.error('Error apiSubmitDeposit:', err);
         return { ok: false, message: 'Error de conexión' };
     }
-          }
+}
