@@ -1,13 +1,12 @@
 // public/js/referrals.js
 
-// Esta función se llama desde app.js cuando el usuario toca la pestaña "Amigos"
 window.renderReferrals = async function(container) {
     try {
         const user = await fetchUserData(currentUser.id);
-        if (!user) throw new Error("Error al cargar");
-
-        // El enlace de referido usa el telegram_id del usuario
-        const refLink = `https://t.me/TuBotDeCipherX?start=${currentUser.id}`; // 👈 CAMBIA POR EL NOMBRE DE TU BOT
+        
+        // Usamos el nombre de tu bot para el enlace de referido
+        // Cambia 'CipherXbot' por el nombre exacto de tu bot en BotFather
+        const refLink = `https://t.me/CipherXbot?start=${currentUser.id}`; 
 
         container.innerHTML = `
             <!-- EXPLICACIÓN (Primero) -->
@@ -74,7 +73,6 @@ window.shareRefLink = (link) => {
     const text = `🚀 ¡Únete a CipherX y gana rendimiento diario con Copy-Trading! Usa mi enlace:`;
     const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
     
-    // Abre el selector de contactos de Telegram
     if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.openTelegramLink(shareUrl);
     } else {
