@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CipherX | Copy-Trading</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="css/estilos.css">
-    <link rel="stylesheet" href="css/animaciones.css">
-    <link rel="icon" type="image/png" href="../assets/icons/logoo.png">
+    
+    <!-- CORREGIDO: Nombres en inglés y sin subcarpeta -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="icon" type="image/png" href="assets/icons/logoo.png">
 </head>
 <body>
 
     <!-- HEADER (Perfil + Menú) -->
     <header class="top-bar">
         <div class="profile-mini">
-            <img id="user-avatar" class="avatar-mini" src="../assets/icons/logoo.png" alt="Avatar">
+            <!-- CORREGIDO: Ruta a assets -->
+            <img id="user-avatar" class="avatar-mini" src="assets/icons/logoo.png" alt="Avatar">
             <div class="profile-text">
                 <div id="user-name" class="name-mini">Cargando...</div>
                 <div class="id-mini">
@@ -48,22 +51,22 @@
     <!-- NAVEGACIÓN INFERIOR -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchTab('inicio', this)">
-            <img src="../assets/icons/casa.png" alt="Inicio">
+            <img src="assets/icons/casa.png" alt="Inicio">
             <span>Inicio</span>
         </button>
         <button class="nav-item" onclick="switchTab('amigos', this)">
-            <img src="../assets/icons/amigos.png" alt="Amigos">
+            <img src="assets/icons/amigos.png" alt="Amigos">
             <span>Amigos</span>
         </button>
         <button class="nav-item" onclick="switchTab('billetera', this)">
-            <img src="../assets/icons/billetera.png" alt="Billetera">
+            <img src="assets/icons/billetera.png" alt="Billetera">
             <span>Billetera</span>
         </button>
     </nav>
 
     <!-- BOTÓN FLOTANTE DE SOPORTE -->
     <button id="support-btn" class="support-btn" onclick="openSupport()">
-        <img src="../assets/icons/soporte.png" alt="Soporte">
+        <img src="assets/icons/soporte.png" alt="Soporte">
         <span>SOPORTE</span>
     </button>
 
